@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Los Panochos de Nápoles: panadería, desayunos, almuerzos, cenas, fritos y postres para toda la comuna.">
+    <title>Los Panochos de Nápoles | Panadería y Comidas</title>
+
+    <style>
+        /* =====================================================
+           1. VARIABLES DE COLOR (paleta corporativa estilo LED)
+           Para cambiar los colores, edita solo esta sección.
+           ===================================================== */
+        :root {
+            --negro: #07070d;            /* Fondo principal */
+            --negro-suave: #12121f;      /* Fondo de tarjetas */
+            --azul-led: #5ce1ff;         /* Azul claro neón */
+            --morado-led: #b57bff;       /* Morado neón */
+            --texto: #f2f4ff;            /* Texto principal (alto contraste) */
+            --texto-suave: #c4c8e0;      /* Texto secundario */
+            --brillo-azul: 0 0 8px rgba(92, 225, 255, 0.7), 0 0 22px rgba(92, 225, 255, 0.4);
+            --brillo-morado: 0 0 8px rgba(181, 123, 255, 0.7), 0 0 22px rgba(181, 123, 255, 0.4);
+        }
+
+        /* =====================================================
+           2. ESTILOS BASE
+           ===================================================== */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;   /* Desplazamiento suave al usar el menú */
+            scroll-padding-top: 80px;  /* Evita que el encabezado tape los títulos */
+        }
+
+        body {
+            font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+            background-color: var(--negro);
+            color: var(--texto);
+            line-height: 1.6;
+        }
+
+        img, svg {
+            max-width: 100%;
+        }
+
+        a {
+            color: var(--azul-led);
+        }
+
+        /* Foco visible para quienes navegan con teclado */
+        a:focus-visible,
+        button:focus-visible,
+        input:focus-visible,
+        textarea:focus-visible,
+        select:focus-visible {
+            outline: 3px solid var(--morado-led);
+            outline-offset: 3px;
+        }
+
+        /* Enlace "saltar al contenido" (accesibilidad) */
+        .enlace-saltar {
+            position: absolute;
+            left: -999px;
+            top: 8px;
+            background: var(--azul-led);
+            color: #000;
+            padding: 10px 16px;
+            border-radius: 6px;
+            z-index: 200;
+            font-weight: bold;
+        }
+        .enlace-saltar:focus {
+            left: 8px;
+        }
+
+        /* Contenedor que centra y limita el ancho del contenido */
+        .contenedor {
+            width: 100%;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Sección genérica */
+        .seccion {
+            padding: 70px 0;
+        }
+
+        .seccion__titulo {
+            text-align: center;
+            font-size: clamp(1.7rem, 4vw, 2.4rem);
+            color: var(--azul-led);
+            text-shadow: var(--brillo-azul);
+            margin-bottom: 10px;
+        }
+
+        .seccion__subtitulo {
+            text-align: center;
+            color: var(--texto-suave);
+            max-width: 640px;
+            margin: 0 auto 40px;
+        }
+
+        /* =====================================================
+           3. ENCABEZADO Y MENÚ DE NAVEGACIÓN
+           ===================================================== */
+        .encabezado {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(7, 7, 13, 0.95);
+            border-bottom: 2px solid var(--morado-led);
+            box-shadow: 0 2px 18px rgba(181, 123, 255, 0.45);
+        }
+
+        .encabezado__interior {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 70px;
+            gap: 16px;
+        }
+
+        /* Logotipo */
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 1.15rem;
+            color: var(--texto);
+        }
+        .logo__icono {
+            font-size: 1.8rem;
+            filter: drop-shadow(0 0 6px var(--azul-led));
+        }
+        .logo__texto span {
+            color: var(--azul-led);
+            text-shadow: var(--brillo-azul);
+        }
+
+        /* Botón hamburguesa (solo se ve en celular y tableta) */
+        .menu__boton {
+            display: none;
+            background: transparent;
+            color: var(--azul-led);
+            border: 2px solid var(--azul-led);
+            border-radius: 8px;
+            font-size: 1.5rem;
+            padding: 4px 12px;
+            cursor: pointer;
+            box-shadow: var(--brillo-azul);
+        }
+
+        .menu__lista {
+            display: flex;
+            list-style: none;
+            gap: 6px;
+        }
+
+        .menu__enlace {
+            display: block;
+            padding: 8px 14px;
+            text-decoration: none;
+            color: var(--texto);
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.25s;
+        }
+        .menu__enlace:hover {
+            color: #000;
+            background: var(--azul-led);
+            box-shadow: var(--brillo-azul);
+        }
+
+        /* =====================================================
+           4. SECCIÓN DE INICIO (HERO)
+           ===================================================== */
+        .inicio {
+            text-align: center;
+            padding: 90px 0 80px;
+            background:
+                radial-gradient(circle at 20% 20%, rgba(181, 123, 255, 0.25), transparent 45%),
+                radial-gradient(circle at 80% 70%, rgba(92, 225, 255, 0.22), transparent 45%),
+                var(--negro);
+        }
+
+        .inicio__etiqueta {
+            display: inline-block;
+            border: 1px solid var(--morado-led);
+            color: var(--morado-led);
+            padding: 4px 16px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            box-shadow: var(--brillo-morado);
+        }
+
+        .inicio__titulo {
+            font-size: clamp(2.2rem, 7vw, 4.2rem);
+            line-height: 1.15;
+            margin-bottom: 18px;
+        }
+
+        /* Efecto de letrero LED */
+        .led-azul {
+            color: var(--azul-led);
+            text-shadow: var(--brillo-azul);
+        }
+        .led-morado {
+            color: var(--morado-led);
+            text-shadow: var(--brillo-morado);
+        }
+
+        .inicio__texto {
+            max-width: 620px;
+            margin: 0 auto 30px;
+            color: var(--texto-suave);
+            font-size: 1.1rem;
+        }
+
+        .inicio__botones {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 14px;
+        }
+
+        /* Botones */
+        .boton {
+            display: inline-block;
+            padding: 12px 28px;
+            border-radius: 40px;
+            font-weight: 700;
+            text-decoration: none;
+            border: 2px solid transparent;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .boton:hover {
+            transform: translateY(-3px);
+        }
+        .boton--azul {
+            background: var(--azul-led);
+            color: #000;
+            box-shadow: var(--brillo-azul);
+        }
+        .boton--borde {
+            background: transparent;
+            color: var(--morado-led);
+            border-color: var(--morado-led);
+            box-shadow: var(--brillo-morado);
+        }
+
+        /* =====================================================
+           5. NOSOTROS
+           ===================================================== */
+        .nosotros__rejilla {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nosotros__texto p {
+            margin-bottom: 14px;
+            color: var(--texto-suave);
+        }
+
+        .nosotros__panel {
+            background: var(--negro-suave);
+            border: 2px solid var(--azul-led);
+            border-radius: 18px;
+            padding: 28px;
+            box-shadow: var(--brillo-azul);
+        }
+        .nosotros__panel h3 {
+            color: var(--morado-led);
+            text-shadow: var(--brillo-morado);
+            margin-bottom: 10px;
+        }
+        .nosotros__panel ul {
+            list-style: none;
+        }
+        .nosotros__panel li {
+            padding: 6px 0;
+        }
+
+        /* =====================================================
+           6. PRODUCTOS (tarjetas)
+           ===================================================== */
+        .productos {
+            background: linear-gradient(180deg, var(--negro), #0c0c18);
+        }
+
+        .tarjetas {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 24px;
+        }
+
+        .tarjeta {
+            background: var(--negro-suave);
+            border: 2px solid var(--morado-led);
+            border-radius: 18px;
+            padding: 26px 22px;
+            text-align: center;
+            box-shadow: var(--brillo-morado);
+            transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+        }
+        .tarjeta:hover {
+            transform: translateY(-6px);
+            border-color: var(--azul-led);
+            box-shadow: var(--brillo-azul);
+        }
+        .tarjeta__icono {
+            font-size: 3rem;
+            display: block;
+            margin-bottom: 10px;
+        }
+        .tarjeta__titulo {
+            color: var(--azul-led);
+            margin-bottom: 8px;
+        }
+        .tarjeta__texto {
+            color: var(--texto-suave);
+            font-size: 0.97rem;
+        }
+
+        /* =====================================================
+           7. VENTAJAS COMPETITIVAS
+           ===================================================== */
+        .ventajas__rejilla {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 22px;
+        }
+
+        .ventaja {
+            background: var(--negro-suave);
+            border-left: 5px solid var(--azul-led);
+            border-radius: 12px;
+            padding: 22px;
+            box-shadow: -4px 0 14px rgba(92, 225, 255, 0.35);
+        }
+        .ventaja__icono {
+            font-size: 2rem;
+        }
+        .ventaja h3 {
+            color: var(--morado-led);
+            margin: 6px 0;
+        }
+        .ventaja p {
+            color: var(--texto-suave);
+            font-size: 0.97rem;
+        }
+
+        /* =====================================================
+           8. CONTACTO Y FORMULARIO DEMOSTRATIVO
+           ===================================================== */
+        .contacto {
+            background: linear-gradient(180deg, #0c0c18, var(--negro));
+        }
+
+        .contacto__rejilla {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .contacto__datos,
+        .formulario {
+            background: var(--negro-suave);
+            border: 2px solid var(--azul-led);
+            border-radius: 18px;
+            padding: 28px;
+            box-shadow: var(--brillo-azul);
+        }
+
+        .contacto__datos h3,
+        .formulario h3 {
+            color: var(--morado-led);
+            text-shadow: var(--brillo-morado);
+            margin-bottom: 14px;
+        }
+
+        .contacto__datos ul {
+            list-style: none;
+        }
+        .contacto__datos li {
+            padding: 8px 0;
+            border-bottom: 1px dashed rgba(181, 123, 255, 0.4);
+        }
+
+        .aviso {
+            background: rgba(181, 123, 255, 0.15);
+            border: 1px solid var(--morado-led);
+            border-radius: 10px;
+            padding: 10px 14px;
+            font-size: 0.92rem;
+            margin-bottom: 16px;
+        }
+
+        .formulario label {
+            display: block;
+            margin: 12px 0 4px;
+            font-weight: 600;
+        }
+        .formulario input,
+        .formulario textarea {
+            width: 100%;
+            padding: 10px 12px;
+            background: #000;
+            color: var(--texto);
+            border: 2px solid var(--morado-led);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+        .formulario button {
+            margin-top: 18px;
+            width: 100%;
+        }
+        .formulario__mensaje {
+            margin-top: 14px;
+            color: var(--azul-led);
+            font-weight: 600;
+            min-height: 1.5em;
+        }
+
+        /* =====================================================
+           9. PIE DE PÁGINA
+           ===================================================== */
+        .pie {
+            text-align: center;
+            padding: 30px 20px;
+            border-top: 2px solid var(--morado-led);
+            box-shadow: 0 -2px 18px rgba(181, 123, 255, 0.4);
+            color: var(--texto-suave);
+        }
+        .pie__enlaces {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 18px;
+            list-style: none;
+            margin-bottom: 12px;
+        }
+
+        /* =====================================================
+           10. DISEÑO ADAPTABLE (tabletas y celulares)
+           ===================================================== */
+        @media (max-width: 860px) {
+            .nosotros__rejilla,
+            .contacto__rejilla {
+                grid-template-columns: 1fr;
+            }
+
+            .menu__boton {
+                display: block;
+            }
+
+            .menu {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: var(--negro);
+                border-bottom: 2px solid var(--morado-led);
+                display: none;               /* Oculto hasta pulsar el botón */
+            }
+            .menu.menu--abierto {
+                display: block;
+            }
+            .menu__lista {
+                flex-direction: column;
+                padding: 12px 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .seccion {
+                padding: 50px 0;
+            }
+            .logo {
+                font-size: 1rem;
+            }
+        }
+
+        /* Respeta a quienes prefieren menos animaciones */
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+            * { transition: none !important; }
+        }
+    </style>
+</head>
+
+<body>
+    <a class="enlace-saltar" href="#contenido">Saltar al contenido principal</a>
+
+    <!-- ================= ENCABEZADO ================= -->
+    <header class="encabezado">
+        <div class="contenedor encabezado__interior">
+
+            <!-- Logotipo -->
+            <a class="logo" href="#inicio" aria-label="Los Panochos de Nápoles, ir al inicio">
+                <span class="logo__icono" aria-hidden="true">🥐</span>
+                <span class="logo__texto">Los <span>Panochos</span> de Nápoles</span>
+            </a>
+
+            <!-- Botón para abrir el menú en celulares -->
+            <button class="menu__boton" id="botonMenu" aria-label="Abrir menú de navegación" aria-expanded="false" aria-controls="menuPrincipal">
+                ☰
+            </button>
+
+            <!-- Menú de navegación -->
+            <nav class="menu" id="menuPrincipal" aria-label="Menú principal">
+                <ul class="menu__lista">
+                    <li><a class="menu__enlace" href="#inicio">Inicio</a></li>
+                    <li><a class="menu__enlace" href="#nosotros">Nosotros</a></li>
+                    <li><a class="menu__enlace" href="#productos">Productos</a></li>
+                    <li><a class="menu__enlace" href="#ventajas">Ventajas</a></li>
+                    <li><a class="menu__enlace" href="#contacto">Contacto</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main id="contenido">
+
+        <!-- ================= INICIO ================= -->
+        <section class="inicio" id="inicio" aria-labelledby="titulo-inicio">
+            <div class="contenedor">
+                <p class="inicio__etiqueta">Sabor de barrio, hecho con cariño</p>
+                <h1 class="inicio__titulo" id="titulo-inicio">
+                    <span class="led-azul">Los Panochos</span>
+                    <span class="led-morado">de Nápoles</span>
+                </h1>
+                <p class="inicio__texto">
+                    Pan fresco, desayunos, almuerzos, cenas, fritos y postres para toda la comuna.
+                    Todo lo que necesitas en un solo lugar.
+                </p>
+                <div class="inicio__botones">
+                    <a class="boton boton--azul" href="#productos">Ver productos</a>
+                    <a class="boton boton--borde" href="#contacto">Contáctanos</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= NOSOTROS ================= -->
+        <section class="seccion" id="nosotros" aria-labelledby="titulo-nosotros">
+            <div class="contenedor">
+                <h2 class="seccion__titulo" id="titulo-nosotros">Quiénes somos</h2>
+                <p class="seccion__subtitulo">Un negocio de la comuna, pensado para las familias de la comuna.</p>
+
+                <div class="nosotros__rejilla">
+                    <div class="nosotros__texto">
+                        <p>
+                            <strong>Los Panochos de Nápoles</strong> es un negocio dedicado a la venta de alimentos.
+                            Horneamos pan todos los días y preparamos comidas caseras para acompañar cada
+                            momento de tu jornada.
+                        </p>
+                        <p>
+                            Desde el desayuno hasta la cena, ofrecemos productos de consumo cotidiano a
+                            precios justos, con atención cercana y ambiente de confianza.
+                        </p>
+                    </div>
+
+                    <aside class="nosotros__panel" aria-label="Misión y visión">
+                        <h3>Nuestra misión</h3>
+                        <p>Llevar alimentos frescos, ricos y accesibles a cada hogar de la comuna.</p>
+                        <h3 style="margin-top:16px;">Nuestros valores</h3>
+                        <ul>
+                            <li>✔ Frescura todos los días</li>
+                            <li>✔ Atención amable</li>
+                            <li>✔ Precios justos</li>
+                            <li>✔ Compromiso con la comunidad</li>
+                        </ul>
+                    </aside>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PRODUCTOS ================= -->
+        <section class="seccion productos" id="productos" aria-labelledby="titulo-productos">
+            <div class="contenedor">
+                <h2 class="seccion__titulo" id="titulo-productos">Nuestros productos y servicios</h2>
+                <p class="seccion__subtitulo">Elige tu favorito: tenemos algo para cada hora del día.</p>
+
+                <div class="tarjetas">
+                    <article class="tarjeta">
+                        <span class="tarjeta__icono" aria-hidden="true">🥖</span>
+                        <h3 class="tarjeta__titulo">Panadería</h3>
+                        <p class="tarjeta__texto">Panes, roscones, croissants y pastelería horneada cada día.</p>
+                    </article>
+
+                    <article class="tarjeta">
+                        <span class="tarjeta__icono" aria-hidden="true">🛒</span>
+                        <h3 class="tarjeta__titulo">Consumo cotidiano</h3>
+                        <p class="tarjeta__texto">Productos básicos para tu hogar, sin desplazarte lejos.</p>
+                    </article>
+
+                    <article class="tarjeta">
+                        <span class="tarjeta__icono" aria-hidden="true">☕</span>
+                        <h3 class="tarjeta__titulo">Desayunos</h3>
+                        <p class="tarjeta__texto">Café, chocolate, huevos, arepas y pan para empezar con energía.</p>
+                    </article>
+
+                    <article class="tarjeta">
+                        <span class="tarjeta__icono" aria-hidden="true">🍲</span>
+                        <h3 class="tarjeta__titulo">Almuerzos</h3>
+                        <p class="tarjeta__texto">Menú del día casero, con sopa, plato fuerte y bebida.</p>
+                    </article>
+
+                    <article class="tarjeta">
+                        <span class="tarjeta__icono" aria-hidden="true">🌙</span>
+                        <h3 class="tarjeta__titulo">Cenas</h3>
+                        <p class="tarjeta__texto">Opciones ligeras y contundentes para cerrar bien el día.</p>
+                    </article>
+
+                    <article class="tarjeta">
+                        <span class="tarjeta__icono" aria-hidden="true">🍟</span>
+                        <h3 class="tarjeta__titulo">Fritos</h3>
+                        <p class="tarjeta__texto">Empanadas, buñuelos, papas rellenas y más, siempre calientes.</p>
+                    </article>
+
+                    <article class="tarjeta">
+                        <span class="tarjeta__icono" aria-hidden="true">🍰</span>
+                        <h3 class="tarjeta__titulo">Postres</h3>
+                        <p class="tarjeta__texto">Tortas, flanes y dulces para celebrar o darte un gusto.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= VENTAJAS ================= -->
+        <section class="seccion" id="ventajas" aria-labelledby="titulo-ventajas">
+            <div class="contenedor">
+                <h2 class="seccion__titulo" id="titulo-ventajas">¿Por qué elegirnos?</h2>
+                <p class="seccion__subtitulo">Lo que nos hace diferentes en la comuna.</p>
+
+                <div class="ventajas__rejilla">
+                    <article class="ventaja">
+                        <span class="ventaja__icono" aria-hidden="true">🔥</span>
+                        <h3>Siempre fresco</h3>
+                        <p>Horneamos y preparamos a diario para que todo llegue recién hecho.</p>
+                    </article>
+                    <article class="ventaja">
+                        <span class="ventaja__icono" aria-hidden="true">📍</span>
+                        <h3>Cerca de ti</h3>
+                        <p>Ubicados en tu comuna: sin largos recorridos ni complicaciones.</p>
+                    </article>
+                    <article class="ventaja">
+                        <span class="ventaja__icono" aria-hidden="true">💰</span>
+                        <h3>Precios accesibles</h3>
+                        <p>Calidad al alcance de todos los bolsillos de la familia.</p>
+                    </article>
+                    <article class="ventaja">
+                        <span class="ventaja__icono" aria-hidden="true">🍽️</span>
+                        <h3>Todo en un lugar</h3>
+                        <p>Pan, comidas, fritos, postres y productos del día a día.</p>
+                    </article>
+                    <article class="ventaja">
+                        <span class="ventaja__icono" aria-hidden="true">😊</span>
+                        <h3>Trato amable</h3>
+                        <p>Te atendemos como a un vecino, porque lo eres.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= CONTACTO ================= -->
+        <section class="seccion contacto" id="contacto" aria-labelledby="titulo-contacto">
+            <div class="contenedor">
+                <h2 class="seccion__titulo" id="titulo-contacto">Contacto</h2>
+                <p class="seccion__subtitulo">Visítanos o escríbenos. ¡Con gusto te atendemos!</p>
+
+                <div class="contacto__rejilla">
+
+                    <!-- Datos de contacto (ficticios, reemplázalos por los reales) -->
+                    <div class="contacto__datos">
+                        <h3>Datos del negocio</h3>
+                        <ul>
+                            <li><strong>📍 Dirección:</strong> Calle Ejemplo # 00-00, Comuna Ejemplo</li>
+                            <li><strong>📞 Teléfono:</strong> 000 000 0000 (ejemplo)</li>
+                            <li><strong>✉️ Correo:</strong> contacto@ejemplo.com</li>
+                            <li><strong>🕒 Horario:</strong> Lunes a sábado, 6:00 a. m. – 9:00 p. m.</li>
+                            <li><strong>🕒 Domingos:</strong> 7:00 a. m. – 2:00 p. m.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Formulario DEMOSTRATIVO -->
+                    <form class="formulario" id="formularioContacto" aria-labelledby="titulo-formulario">
+                        <h3 id="titulo-formulario">Envíanos un mensaje</h3>
+
+                        <p class="aviso" role="note">
+                            <strong>Formulario demostrativo:</strong> no envía información a ningún lugar.
+                            Para que funcione se necesita una integración adicional (por ejemplo, un servicio de correo o un servidor).
+                        </p>
+
+                        <label for="nombre">Nombre</label>
+                        <input type="text" id="nombre" name="nombre" placeholder="Tu nombre" required>
+
+                        <label for="correo">Correo electrónico</label>
+                        <input type="email" id="correo" name="correo" placeholder="tucorreo@ejemplo.com" required>
+
+                        <label for="mensaje">Mensaje</label>
+                        <textarea id="mensaje" name="mensaje" rows="4" placeholder="Escribe tu mensaje aquí" required></textarea>
+
+                        <button type="submit" class="boton boton--azul">Enviar (demostración)</button>
+                        <p class="formulario__mensaje" id="respuestaFormulario" role="status" aria-live="polite"></p>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ================= PIE DE PÁGINA ================= -->
+    <footer class="pie">
+        <ul class="pie__enlaces">
+            <li><a href="#inicio">Inicio</a></li>
+            <li><a href="#nosotros">Nosotros</a></li>
+            <li><a href="#productos">Productos</a></li>
+            <li><a href="#ventajas">Ventajas</a></li>
+            <li><a href="#contacto">Contacto</a></li>
+        </ul>
+        <p>&copy; 2026 Los Panochos de Nápoles. Todos los derechos reservados.</p>
+    </footer>
+
+    <script>
+        /* ---------- Menú hamburguesa para celulares ---------- */
+        var botonMenu = document.getElementById("botonMenu");
+        var menu = document.getElementById("menuPrincipal");
+
+        botonMenu.addEventListener("click", function () {
+            var abierto = menu.classList.toggle("menu--abierto");
+            botonMenu.setAttribute("aria-expanded", abierto);
+        });
+
+        /* Cierra el menú al elegir una opción */
+        menu.addEventListener("click", function (evento) {
+            if (evento.target.tagName === "A") {
+                menu.classList.remove("menu--abierto");
+                botonMenu.setAttribute("aria-expanded", "false");
+            }
+        });
+
+        /* ---------- Formulario demostrativo (no envía datos) ---------- */
+        document.getElementById("formularioContacto").addEventListener("submit", function (evento) {
+            evento.preventDefault(); // Evita cualquier envío
+            document.getElementById("respuestaFormulario").textContent =
+                "Gracias. Esto es solo una demostración: tu mensaje no fue enviado.";
+            this.reset();
+        });
+    </script>
+</body>
+</html>
